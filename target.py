@@ -306,7 +306,7 @@ class PageCart(Page):
         return
 
 
-def start_mr_slowly(product_url, cvv, username, password, delay=5):
+def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5):
     """
     Login manually during the 30 second wait. It'll loop endlessly waiting for the "pick it up" button to appear
     it should complete the purchase
@@ -325,7 +325,7 @@ def start_mr_slowly(product_url, cvv, username, password, delay=5):
     driver.get("https://www.target.com")
     time.sleep(45)  # gives you time to login
     # login.execute_tasks(driver, delay)
-    while count < 2:
+    while count < order_count:
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
         product.execute_tasks(driver, delay)
@@ -364,7 +364,8 @@ if __name__ == "__main__":
     parser.add_argument("--cvv", dest='cvv', required=True, help="security code for the CC you setup on target")
     parser.add_argument("--user", dest='user', required=False, help="user")
     parser.add_argument("--pass", dest='password', required=False, help="password")
+    parser.add_argument("--order-count", dest='order_count', required=False, help="1 product per order, will try for multiple orders", default=1)
     parser.add_argument("--url", dest="url", required=True, help="This the URL shown in the address bar of your browser for the product you want")
     parser.add_argument("--refresh-delay", dest='refresh_delay', required=False, help="how many seconds to wait between page refresh", default=5)
     args = parser.parse_args()
-    start_mr_slowly(args.url, args.cvv, args.user, args.password, int(args.refresh_delay))
+    start_mr_slowly(args.url, args.cvv, args.user, args.password, int(args.order_count), int(args.refresh_delay))
