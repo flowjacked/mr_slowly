@@ -103,7 +103,7 @@ if __name__ == "__main__":
     """
     Simple selenium bot to complete purchase at GameStop for a product once "Add cart" is available. 
     
-    NOTE: for any of this to work, setup a value gamstop.com account. Setup your shipping address. Save a credit card
+    NOTE: for any of this to work, setup a gamstop.com account. Setup your shipping address. Save a credit card
           the script doesn't put any of the info in when you checkout.
           
     Software setup:      
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     
     Usage:
     "< ... >" in the example denote what's inside is user provided. Do not put in angle brackets or quotes
-    python turtlebot.py --user <your email or login> --password <your password> --CCcode <your CC code> --url https://www.gamestop.com/video-games/playstation-5/consoles/products/playstation-5-digital-edition-black-friday-system-bundle/B225171G.html>
+    python mr_slowly.py --user <your email or login> --password <your password> --CCcode <your CC code> --url https://www.gamestop.com/video-games/playstation-5/consoles/products/playstation-5-digital-edition-black-friday-system-bundle/B225171G.html
     """
     parser = argparse.ArgumentParser("Start a gamestop selenium bot", formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--user", dest='user', required=True, help="name of your gamestop user")
