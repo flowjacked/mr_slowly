@@ -323,8 +323,8 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
     cart = PageCart()
     order_review = PageOrderReview(cvv)
     driver.get("https://www.target.com")
-    time.sleep(45)  # gives you time to login
-    # login.execute_tasks(driver, delay)
+    #time.sleep(45)  # gives you time to login
+    login.execute_tasks(driver, delay)
     while count < order_count:
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
@@ -358,7 +358,7 @@ if __name__ == "__main__":
     
     Usage:
     "< ... >" in the example denote what's inside is user provided. Do not put in angle brackets or quotes
-    python start_mr_slowly.py  --refresh-delay <delay between page refreshes> --cvv <your CC code> --url <ps5 url>
+    python target.py  --refresh-delay <delay between page refreshes> --cvv <your CC code> --url <ps5 url>
     """
     parser = argparse.ArgumentParser("Start a target selenium bot", formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--cvv", dest='cvv', required=True, help="security code for the CC you setup on target")
