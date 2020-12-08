@@ -96,7 +96,7 @@ class PageOrderReview(Page):
             except Exception:
                 continue
             # refreshing the page can cause unnecessary delays, let's just try again
-            if retries_before_refresh == 3:
+            if retries_before_refresh == tried:
                 driver.refresh()
             else:
                 tried += 1
@@ -106,6 +106,46 @@ class PageOrderReview(Page):
                 delay += 1
         return
 
+
+class PageCart(Page):
+    page = "https://www.target.com/co-cart"
+    ready_to_checkout_button = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-tight.h-margin-b-default > button"
+
+    def __init__(self):
+        self.order_of_operations = [
+            PageCart.ready_to_checkout_button
+        ]
+        self.task_map = self.create_tasks()
+        self.added_to_cart = 0
+
+    def create_tasks(self):
+        def ready_to_checkout(driver):
+            driver.find_element_by_css_selector(PageCart.ready_to_checkout_button).click()
+
+        return {
+            PageCart.ready_to_checkout_button: ready_to_checkout
+        }
+
+    def check_success(self, driver):
+        return driver.title != self.title
+
+    def go_to_page(self, driver):
+        driver.get(PageCart.page)
+        self.title = driver.title
+
+    def execute_tasks(self, driver, delay, progressive_delay=False, order_of_operations=None):
+        if order_of_operations is None:
+            order_of_operations = self.order_of_operations
+        while True:
+            for selector in order_of_operations:
+                if self.check_for_element(selector, driver):
+                    self.task_map[selector](driver)
+                    return
+            driver.refresh()
+            time.sleep(delay)
+            if progressive_delay:
+                delay += 1
+        return
 
 class PageProduct(Page):
     pick_it_up_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
@@ -144,8 +184,8 @@ class PageProduct(Page):
                 if self.check_for_element(selector, driver):
                     self.task_map[selector](driver)
                     self.added_to_cart += 1
-            if self.check_success == True:
-                break
+                    if self.check_success(driver) == True:
+                        return
             '''    
             # Login logic if I can get it working
             try:
@@ -252,52 +292,7 @@ class PageLogin(Page):
             for selector in order_of_operations:
                 if self.check_for_element(selector, driver):
                     self.task_map[selector](driver)
-            if self.check_success == True:
-                break
-            driver.refresh()
-            time.sleep(delay)
-            if progressive_delay:
-                delay += 1
-        return
-
-
-class PageCart(Page):
-    page = "https://www.target.com/co-cart"
-    ready_to_checkout_button = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-tight.h-margin-b-default > button"
-
-    def __init__(self):
-        self.order_of_operations = [
-            PageCart.ready_to_checkout_button
-        ]
-        self.task_map = self.create_tasks()
-        self.added_to_cart = 0
-
-    def create_tasks(self):
-        def ready_to_checkout(driver):
-            driver.find_element_by_css_selector(PageCart.ready_to_checkout_button).click()
-
-        return {
-            PageCart.ready_to_checkout_button: ready_to_checkout
-        }
-
-    def check_success(self, driver):
-        return driver.title != self.title
-
-    def go_to_page(self, driver):
-        driver.get(PageCart.page)
-        self.title = driver.title
-
-    def execute_tasks(self, driver, delay, progressive_delay=False, order_of_operations=None):
-        if order_of_operations is None:
-            order_of_operations = self.order_of_operations
-        wait = True
-        while wait:
-            for selector in order_of_operations:
-                if self.check_for_element(selector, driver):
-                    self.task_map[selector](driver)
-            if self.check_success:
-                wait = False
-            if not wait:
+            if self.check_success(driver) == True:
                 break
             driver.refresh()
             time.sleep(delay)
@@ -317,10 +312,10 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
     :return:
     """
     count = 0
+    # Login and cart may be used in the future
     driver = webdriver.Chrome()
     login = PageLogin(username, password)
     product = PageProduct(product_url, login)
-    cart = PageCart()
     order_review = PageOrderReview(cvv)
     driver.get("https://www.target.com")
     time.sleep(45)  # gives you time to login
@@ -329,8 +324,6 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
         product.execute_tasks(driver, delay)
-        cart.go_to_page(driver)
-        cart.execute_tasks(driver, delay)
         order_review.go_to_page(driver)
         order_review.execute_tasks(driver, delay)
         count += 1
@@ -343,6 +336,10 @@ if __name__ == "__main__":
     
     NOTE: for any of this to work, setup an account on target.com. Setup your shipping address. Save a credit card
           the script doesn't put any of the info in when you checkout.
+          
+    Designed uses:
+    - Run bot hours before unknown online product drop, will pick up product once available
+    - 
           
     Software setup:      
     - Install python for your O/S (Windows, Linux, macos)
