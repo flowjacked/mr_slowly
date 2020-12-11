@@ -21,6 +21,8 @@ class PageOrderReview(Page):
     place_your_order_button = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-tight > div > button"
     save_and_continue_button1 = "#STEP_PAYMENT > div > div:nth-child(2) > div > div.Col-favj32-0.gghFV > div > div > button"
     save_and_continue_button2 = "#STEP_PICKUP > div.Col-favj32-0.gghFV > div > div > button"
+    save_and_continue_button3 = "#STEP_PAYMENT > div > div:nth-child(2) > div > div.Col__StyledCol-sc-1c90kgr-0.hBuSEy > div > div > button"
+    save_and_continue_button4 = "#STEP_PICKUP > div.Col__StyledCol-sc-1c90kgr-0.hBuSEy > div > div > button"
     thanks_for_order = "#viewport > div:nth-child(5) > div.h-bg-grayLightest.h-padding-a-jumbo > h1"
 
     def __init__(self, cvv):
@@ -30,6 +32,8 @@ class PageOrderReview(Page):
             PageOrderReview.cc_cvv_input,
             PageOrderReview.save_and_continue_button1,
             PageOrderReview.save_and_continue_button2,
+            PageOrderReview.save_and_continue_button3,
+            PageOrderReview.save_and_continue_button4,
             PageOrderReview.place_your_order_button
         ]
         self.task_map = self.create_tasks()
@@ -63,6 +67,16 @@ class PageOrderReview(Page):
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.save_and_continue_button2)))
             e.click()
 
+        def save_and_continue3(driver):
+            e = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.save_and_continue_button3)))
+            e.click()
+
+        def save_and_continue4(driver):
+            e = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.save_and_continue_button4)))
+            e.click()
+
         def apply_payment_method(driver):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.apply_a_payment_method)))
@@ -73,6 +87,8 @@ class PageOrderReview(Page):
             PageOrderReview.cc_cvv_input: enter_cvv,
             PageOrderReview.save_and_continue_button1: save_and_continue1,
             PageOrderReview.save_and_continue_button2: save_and_continue2,
+            PageOrderReview.save_and_continue_button3: save_and_continue3,
+            PageOrderReview.save_and_continue_button4: save_and_continue4,
             PageOrderReview.place_your_order_button: place_order
         }
 
@@ -149,12 +165,14 @@ class PageCart(Page):
 
 class PageProduct(Page):
     pick_it_up_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
+    pick_up_here_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
 
     def __init__(self, product_url, login_page=None, product_count=1):
         self.login_page = login_page
         self.page = product_url
         self.order_of_operations = [
-            PageProduct.pick_it_up_button
+            PageProduct.pick_it_up_button,
+            PageProduct.pick_up_here_button
         ]
         self.product_count = product_count
         self.task_map = self.create_tasks()
@@ -164,8 +182,12 @@ class PageProduct(Page):
         def pick_it_up(driver):
             driver.find_element_by_css_selector(PageProduct.pick_it_up_button).click()
 
+        def pick_up_here(driver):
+            driver.find_element_by_css_selector(PageProduct.pick_up_here_button).click()
+
         return {
-            PageProduct.pick_it_up_button: pick_it_up
+            PageProduct.pick_it_up_button: pick_it_up,
+            PageProduct.pick_up_here_button: pick_up_here
         }
 
     def check_success(self, driver):
