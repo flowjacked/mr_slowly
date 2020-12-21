@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import requests
+import time
 
 import time
 import argparse
@@ -97,6 +98,7 @@ class PageOrderReview(Page):
         self.title = driver.title
 
     def execute_tasks(self, driver, delay, progressive_delay=False, order_of_operations=None):
+        self.title = driver.title
         if order_of_operations is None:
             order_of_operations = self.order_of_operations
         retries_before_refresh = 3
@@ -150,6 +152,7 @@ class PageCart(Page):
         self.title = driver.title
 
     def execute_tasks(self, driver, delay, progressive_delay=False, order_of_operations=None):
+        self.title = driver.title
         if order_of_operations is None:
             order_of_operations = self.order_of_operations
         while True:
@@ -338,6 +341,7 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
     driver = webdriver.Chrome()
     login = PageLogin(username, password)
     product = PageProduct(product_url, login)
+    cart = PageCart()
     order_review = PageOrderReview(cvv)
     driver.get("https://www.target.com")
     time.sleep(45)  # gives you time to login
@@ -346,7 +350,8 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
         product.execute_tasks(driver, delay)
-        order_review.go_to_page(driver)
+        cart.go_to_page(driver)
+        cart.execute_tasks(driver, delay)
         order_review.execute_tasks(driver, delay)
         count += 1
     driver.close()
