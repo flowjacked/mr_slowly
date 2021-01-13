@@ -169,13 +169,17 @@ class PageCart(Page):
 class PageProduct(Page):
     pick_it_up_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
     pick_up_here_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
+    pick_it_up_button_saved = "body > div:nth-child(19) > div > div > div > div > div > div > div:nth-child(2) > div > div > div > div > div:nth-child(5) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.eKwtCR.h-padding-l-tiny > button"
+    add_to_cart = "#savedforlater-items-container > div:nth-child(2) > div:nth-child(1) > div.Col__StyledCol-sc-1c90kgr-0.cZutLC.h-padding-t-tiny.h-padding-h-default > div.Row__StyledRow-sc-19ydihw-0.NoJZu.h-padding-b-tiny > button"
 
     def __init__(self, product_url, login_page=None, product_count=1):
         self.login_page = login_page
         self.page = product_url
         self.order_of_operations = [
             PageProduct.pick_it_up_button,
-            PageProduct.pick_up_here_button
+            PageProduct.pick_up_here_button,
+            PageProduct.add_to_cart,
+            PageProduct.pick_it_up_button_saved
         ]
         self.product_count = product_count
         self.task_map = self.create_tasks()
@@ -183,14 +187,28 @@ class PageProduct(Page):
 
     def create_tasks(self):
         def pick_it_up(driver):
+            self.added_to_cart += 1
             driver.find_element_by_css_selector(PageProduct.pick_it_up_button).click()
 
         def pick_up_here(driver):
+            self.added_to_cart += 1
             driver.find_element_by_css_selector(PageProduct.pick_up_here_button).click()
+
+        def add_to_cart(driver):
+            driver.find_element_by_css_selector(PageProduct.add_to_cart).click()
+            time.sleep(1)
+
+        def pick_it_up_saved(driver):
+            self.added_to_cart += 1
+            e = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, PageProduct.pick_it_up_button_saved)))
+            e.click()
 
         return {
             PageProduct.pick_it_up_button: pick_it_up,
-            PageProduct.pick_up_here_button: pick_up_here
+            PageProduct.pick_up_here_button: pick_up_here,
+            PageProduct.add_to_cart: add_to_cart,
+            PageProduct.pick_it_up_button_saved: pick_it_up_saved
         }
 
     def check_success(self, driver):
@@ -205,12 +223,14 @@ class PageProduct(Page):
             order_of_operations = self.order_of_operations
         wait = True
         while wait:
-            for selector in order_of_operations:
-                if self.check_for_element(selector, driver):
-                    self.task_map[selector](driver)
-                    self.added_to_cart += 1
-                    if self.check_success(driver) == True:
-                        return
+            try:
+                for selector in order_of_operations:
+                    if self.check_for_element(selector, driver):
+                        self.task_map[selector](driver)
+                        if self.check_success(driver) == True:
+                            return
+            except Exception:
+                pass
             '''    
             # Login logic if I can get it working
             try:
@@ -350,7 +370,9 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
         product.execute_tasks(driver, delay)
-        cart.go_to_page(driver)
+        if driver.current_url != cart.page:
+            cart.go_to_page(driver)
+        delay = 3
         cart.execute_tasks(driver, delay)
         order_review.execute_tasks(driver, delay)
         count += 1
