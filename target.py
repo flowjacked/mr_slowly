@@ -167,8 +167,10 @@ class PageCart(Page):
         return
 
 class PageProduct(Page):
-    pick_it_up_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
-    pick_up_here_button = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fMgJXz > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.hJZtrh.h-padding-l-tiny > button"
+    pick_it_up_button1 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
+    pick_it_up_button2 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
+    pick_up_here_button1 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
+    pick_up_here_button2 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
     pick_it_up_button_saved = "body > div:nth-child(19) > div > div > div > div > div > div > div:nth-child(2) > div > div > div > div > div:nth-child(5) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.eKwtCR.h-padding-l-tiny > button"
     add_to_cart = "#savedforlater-items-container > div:nth-child(2) > div:nth-child(1) > div.Col__StyledCol-sc-1c90kgr-0.cZutLC.h-padding-t-tiny.h-padding-h-default > div.Row__StyledRow-sc-19ydihw-0.NoJZu.h-padding-b-tiny > button"
 
@@ -176,8 +178,10 @@ class PageProduct(Page):
         self.login_page = login_page
         self.page = product_url
         self.order_of_operations = [
-            PageProduct.pick_it_up_button,
-            PageProduct.pick_up_here_button,
+            PageProduct.pick_it_up_button1,
+            PageProduct.pick_it_up_button2,
+            PageProduct.pick_up_here_button1,
+            PageProduct.pick_up_here_button2,
             PageProduct.add_to_cart,
             PageProduct.pick_it_up_button_saved
         ]
@@ -186,13 +190,21 @@ class PageProduct(Page):
         self.added_to_cart = 0
 
     def create_tasks(self):
-        def pick_it_up(driver):
+        def pick_it_up1(driver):
             self.added_to_cart += 1
-            driver.find_element_by_css_selector(PageProduct.pick_it_up_button).click()
+            driver.find_element_by_css_selector(PageProduct.pick_it_up_button1).click()
 
-        def pick_up_here(driver):
+        def pick_it_up2(driver):
             self.added_to_cart += 1
-            driver.find_element_by_css_selector(PageProduct.pick_up_here_button).click()
+            driver.find_element_by_css_selector(PageProduct.pick_it_up_button2).click()
+
+        def pick_up_here1(driver):
+            self.added_to_cart += 1
+            driver.find_element_by_css_selector(PageProduct.pick_up_here_button1).click()
+
+        def pick_up_here2(driver):
+            self.added_to_cart += 1
+            driver.find_element_by_css_selector(PageProduct.pick_up_here_button2).click()
 
         def add_to_cart(driver):
             driver.find_element_by_css_selector(PageProduct.add_to_cart).click()
@@ -205,8 +217,10 @@ class PageProduct(Page):
             e.click()
 
         return {
-            PageProduct.pick_it_up_button: pick_it_up,
-            PageProduct.pick_up_here_button: pick_up_here,
+            PageProduct.pick_it_up_button1: pick_it_up1,
+            PageProduct.pick_it_up_button2: pick_it_up2,
+            PageProduct.pick_up_here_button1: pick_up_here1,
+            PageProduct.pick_up_here_button2: pick_up_here2,
             PageProduct.add_to_cart: add_to_cart,
             PageProduct.pick_it_up_button_saved: pick_it_up_saved
         }
