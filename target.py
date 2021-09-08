@@ -4,7 +4,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import requests
 import time
-
 import time
 import argparse
 
@@ -20,11 +19,12 @@ class PageOrderReview(Page):
     cc_cvv_input = "#creditCardInput-cvv"
     apply_a_payment_method = "#STEP_PAYMENT > div > div:nth-child(2) > div > div > a"
     place_your_order_button = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-tight > div > button"
+    place_your_order_button2 = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-default.h-bg-white > div > button"
     save_and_continue_button1 = "#STEP_PAYMENT > div > div:nth-child(2) > div > div.Col-favj32-0.gghFV > div > div > button"
     save_and_continue_button2 = "#STEP_PICKUP > div.Col-favj32-0.gghFV > div > div > button"
     save_and_continue_button3 = "#STEP_PAYMENT > div > div:nth-child(2) > div > div.Col__StyledCol-sc-1c90kgr-0.hBuSEy > div > div > button"
     save_and_continue_button4 = "#STEP_PICKUP > div.Col__StyledCol-sc-1c90kgr-0.hBuSEy > div > div > button"
-    thanks_for_order = "#viewport > div:nth-child(5) > div.h-bg-grayLightest.h-padding-a-jumbo > h1"
+    thanks_for_order = "#viewport > div:nth-child(4) > div.h-bg-grayLightest.h-padding-a-jumbo > h1"
 
     def __init__(self, cvv):
         self.cvv = cvv
@@ -35,7 +35,8 @@ class PageOrderReview(Page):
             PageOrderReview.save_and_continue_button2,
             PageOrderReview.save_and_continue_button3,
             PageOrderReview.save_and_continue_button4,
-            PageOrderReview.place_your_order_button
+            PageOrderReview.place_your_order_button,
+            PageOrderReview.place_your_order_button2
         ]
         self.task_map = self.create_tasks()
 
@@ -56,6 +57,11 @@ class PageOrderReview(Page):
         def place_order(driver):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.place_your_order_button)))
+            e.click()
+
+        def place_order2(driver):
+            e = WebDriverWait(driver, 3).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, PageOrderReview.place_your_order_button2)))
             e.click()
 
         def save_and_continue1(driver):
@@ -90,7 +96,8 @@ class PageOrderReview(Page):
             PageOrderReview.save_and_continue_button2: save_and_continue2,
             PageOrderReview.save_and_continue_button3: save_and_continue3,
             PageOrderReview.save_and_continue_button4: save_and_continue4,
-            PageOrderReview.place_your_order_button: place_order
+            PageOrderReview.place_your_order_button: place_order,
+            PageOrderReview.place_your_order_button2: place_order2,
         }
 
     def go_to_page(self, driver):
@@ -128,10 +135,12 @@ class PageOrderReview(Page):
 class PageCart(Page):
     page = "https://www.target.com/co-cart"
     ready_to_checkout_button = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-tight.h-margin-b-default > button"
+    checkout_button2 = "#orderSummaryWrapperDiv > div > div > div.h-padding-h-default.h-margin-b-default > button"
 
     def __init__(self):
         self.order_of_operations = [
-            PageCart.ready_to_checkout_button
+            PageCart.ready_to_checkout_button,
+            PageCart.checkout_button2
         ]
         self.task_map = self.create_tasks()
         self.added_to_cart = 0
@@ -140,8 +149,12 @@ class PageCart(Page):
         def ready_to_checkout(driver):
             driver.find_element_by_css_selector(PageCart.ready_to_checkout_button).click()
 
+        def ready_to_checkout2(driver):
+            driver.find_element_by_css_selector(PageCart.checkout_button2).click()
+
         return {
-            PageCart.ready_to_checkout_button: ready_to_checkout
+            PageCart.ready_to_checkout_button: ready_to_checkout,
+            PageCart.checkout_button2: ready_to_checkout2,
         }
 
     def check_success(self, driver):
@@ -166,13 +179,16 @@ class PageCart(Page):
                 delay += 1
         return
 
+
 class PageProduct(Page):
-    pick_it_up_button1 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
-    pick_it_up_button2 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
-    pick_up_here_button1 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
+    pick_it_up_button1 = "#viewport > div:nth-child(4) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
+    pick_it_up_button2 = "#viewport > div:nth-child(4) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
+    pick_up_tile_button1 = "#viewport > div:nth-child(4) > div > div.styles__StyledRow-sc-1nuqtm0-0.cuJjmE > div.styles__StyledCol-ct8kx6-0.iSQeVX.h-padding-h-default > div.styles__StyledAddToCartContainer-sc-1n8m629-6.bXuReb > div:nth-child(2) > div:nth-child(1) > div > div.h-margin-b-default > button.BaseButton-sc-3v3oog-0.ButtonSecondary-sc-18j0bd9-0.styles__StyledFulfillmentCell-v2w0hj-0.ikzHag.bNKunA.gAXOLz.h-margin-r-x2"
+    pick_up_here_button1 = "#viewport > div:nth-child(4) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
     pick_up_here_button2 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
     pick_it_up_button_saved = "body > div:nth-child(19) > div > div > div > div > div > div > div:nth-child(2) > div > div > div > div > div:nth-child(5) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.eKwtCR.h-padding-l-tiny > button"
     add_to_cart = "#savedforlater-items-container > div:nth-child(2) > div:nth-child(1) > div.Col__StyledCol-sc-1c90kgr-0.cZutLC.h-padding-t-tiny.h-padding-h-default > div.Row__StyledRow-sc-19ydihw-0.NoJZu.h-padding-b-tiny > button"
+    product_not_found_text = "#mainContainer > div > div > div.h-margin-a-jumbo.h-text-center.h-text-grayDark > div.ProductNotFound__Title-sc-18ftl40-1.bIhWzq"
 
     def __init__(self, product_url, login_page=None, product_count=1):
         self.login_page = login_page
@@ -180,10 +196,12 @@ class PageProduct(Page):
         self.order_of_operations = [
             PageProduct.pick_it_up_button1,
             PageProduct.pick_it_up_button2,
+            PageProduct.pick_up_tile_button1,
             PageProduct.pick_up_here_button1,
             PageProduct.pick_up_here_button2,
             PageProduct.add_to_cart,
-            PageProduct.pick_it_up_button_saved
+            PageProduct.pick_it_up_button_saved,
+            PageProduct.product_not_found_text
         ]
         self.product_count = product_count
         self.task_map = self.create_tasks()
@@ -193,6 +211,10 @@ class PageProduct(Page):
         def pick_it_up1(driver):
             self.added_to_cart += 1
             driver.find_element_by_css_selector(PageProduct.pick_it_up_button1).click()
+
+        def pick_up_tile1(driver):
+            self.added_to_cart += 1
+            driver.find_element_by_css_selector(PageProduct.pick_up_tile_button1).click()
 
         def pick_it_up2(driver):
             self.added_to_cart += 1
@@ -210,6 +232,9 @@ class PageProduct(Page):
             driver.find_element_by_css_selector(PageProduct.add_to_cart).click()
             time.sleep(1)
 
+        def product_not_found(driver):
+            time.sleep(15)
+
         def pick_it_up_saved(driver):
             self.added_to_cart += 1
             e = WebDriverWait(driver, 3).until(
@@ -219,10 +244,12 @@ class PageProduct(Page):
         return {
             PageProduct.pick_it_up_button1: pick_it_up1,
             PageProduct.pick_it_up_button2: pick_it_up2,
+            PageProduct.pick_up_tile_button1: pick_up_tile1,
             PageProduct.pick_up_here_button1: pick_up_here1,
             PageProduct.pick_up_here_button2: pick_up_here2,
             PageProduct.add_to_cart: add_to_cart,
-            PageProduct.pick_it_up_button_saved: pick_it_up_saved
+            PageProduct.pick_it_up_button_saved: pick_it_up_saved,
+            PageProduct.product_not_found_text: product_not_found
         }
 
     def check_success(self, driver):
@@ -245,15 +272,17 @@ class PageProduct(Page):
                             return
             except Exception:
                 pass
-            '''    
-            # Login logic if I can get it working
+
+            """
+            # Checks to see if you were logged out and logs you back in. Slick.
             try:
                 if self.login_page.is_logged_out(driver):
                     self.login_page.execute_tasks(driver, delay)
             except Exception:
                 self.go_to_page(driver)
                 continue
-            '''
+            """
+
             driver.refresh()
             time.sleep(delay)
             if progressive_delay:
@@ -263,8 +292,8 @@ class PageProduct(Page):
 
 class PageLogin(Page):
     page = "https://login.target.com/gsp/static/v1/login/"
-    sign_in_text = "#account > span.styles__AccountName-sc-1kk0q5l-0.hVhJPq"
-    sign_in_menu = "#account > span.AccountLink__SvgUserWrapper-gx13jw-0.cpETQl > span > div > svg > path"
+    sign_in_text = "#account > span.styles__AccountName-sc-1kk0q5l-0.iQFCAn"
+    sign_in_menu = "#account > span.AccountLink__SvgUserWrapper-gx13jw-0.cmGbcQ > span > div > svg"
     sign_in_link = "#accountNav-signIn > a > div"
     keep_signed_in = "#root > div > div.styles__AuthContainerWrapper-sc-1eq9g2f-1.drifUu > div > form > div.sc-jzJRlG.fnsyem.sc-ibxdXY.btPybf.nds-checkbox > label > div"
     login_email_field = "#username"
@@ -301,23 +330,30 @@ class PageLogin(Page):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageLogin.sign_out_completely)))
             e.click()
+            time.sleep(2)
 
         def type_username(driver):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageLogin.login_email_field)))
             e.click()
             e.send_keys(self.username)
+            time.sleep(2)
 
         def type_password(driver):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageLogin.login_password_field)))
             e.click()
             e.send_keys(self.password)
+            time.sleep(2)
 
         def login_submit(driver):
             e = WebDriverWait(driver, 3).until(
                 EC.element_to_be_clickable((By.CSS_SELECTOR, PageLogin.submit_button)))
-            e.click()
+            try:
+                while True:
+                    e.click()
+            except Exception:
+                pass
 
         return {
             PageLogin.sign_in_menu: open_menu,
@@ -333,8 +369,6 @@ class PageLogin(Page):
         if len(e) > 0:
             if e[0].text == "Sign in":
                 return True
-            else:
-                return False
         return False
 
     def go_to_page(self, driver):
@@ -342,7 +376,9 @@ class PageLogin(Page):
         self.title = driver.title
 
     def check_success(self, driver):
-        return driver.title != self.title
+        not_logged_out = not self.is_logged_out(driver)
+        no_submit_button = len(driver.find_elements_by_css_selector(PageLogin.submit_button)) == 0
+        return not_logged_out and no_submit_button
 
     def execute_tasks(self, driver, delay, progressive_delay=False, order_of_operations=None):
         if order_of_operations is None:
@@ -372,14 +408,15 @@ def start_mr_slowly(product_url, cvv, username, password, order_count=1, delay=5
     """
     count = 0
     # Login and cart may be used in the future
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome("/Users/micah.kelly/code/mr_slowly/chromedriver")
+    driver.execute_script("window.open('https://www.target.com');")
+    driver.switch_to.window(driver.window_handles[-1])
     login = PageLogin(username, password)
-    product = PageProduct(product_url, login)
+    product = PageProduct(product_url, login_page=login)
     cart = PageCart()
     order_review = PageOrderReview(cvv)
-    driver.get("https://www.target.com")
-    time.sleep(45)  # gives you time to login
     #login.execute_tasks(driver, delay)
+    time.sleep(45)
     while count < order_count:
         product.go_to_page(driver)
         # Product purchase should be 3 to 4 seconds after this point
@@ -415,6 +452,10 @@ if __name__ == "__main__":
         3. Add it to Path using Command Prompt
              - setx path "%path%;c:/user/eliote/Desktop/geckodriver-v0.26.0-win64/geckodriver.exe"
              NOTE: the path in this example might be a little different depending on where it installed
+    
+    https://www.target.com/p/playstation-5-console/-/A-81114595
+    https://www.target.com/p/-/A-81114596
+    https://www.target.com/p/red-bull-sugar-free-energy-drink-12pk-8-4-fl-oz-cans/-/A-13426753 "Pick Up Here" example
     
     Usage:
     "< ... >" in the example denote what's inside is user provided. Do not put in angle brackets or quotes
