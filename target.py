@@ -183,7 +183,7 @@ class PageCart(Page):
 class PageProduct(Page):
     pick_it_up_button1 = "#viewport > div:nth-child(4) > div > div.Row-sc-uds8za-0.dDtkvD > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-sc-uds8za-0.dDtkvD > div.Col-sc-favj32-0.jyLRSx.h-padding-l-tiny > button"
     pick_it_up_button2 = "#viewport > div:nth-child(4) > div > div.Row-sc-uds8za-0.dDtkvD > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div.Row-sc-uds8za-0.dDtkvD > div.Col-sc-favj32-0.pfmjJ.h-padding-l-tiny > button"
-    pick_up_tile_button1 = "# viewport > div:nth-child(4) > div > div.styles__StyledRow-sc-1nuqtm0-0.cuJjmE > div.styles__StyledCol-ct8kx6-0.iSQeVX.h-padding-h-default > div.styles__StyledAddToCartContainer-sc-1n8m629-6.bXuReb > div:nth-child(2) > div:nth-child(1) > div > div.h-margin-b-default > button.BaseButton-sc-3v3oog-0.ButtonSecondary-sc-18j0bd9-0.styles__StyledFulfillmentCell-v2w0hj-0.ikzHag.bNKunA.gAXOLz.h-margin-r-x2"
+    #pick_up_tile_button1 = "# viewport > div:nth-child(4) > div > div.styles__StyledRow-sc-1nuqtm0-0.cuJjmE > div.styles__StyledCol-ct8kx6-0.iSQeVX.h-padding-h-default > div.styles__StyledAddToCartContainer-sc-1n8m629-6.bXuReb > div:nth-child(2) > div:nth-child(1) > div > div.h-margin-b-default > button.BaseButton-sc-3v3oog-0.ButtonSecondary-sc-18j0bd9-0.styles__StyledFulfillmentCell-v2w0hj-0.ikzHag.bNKunA.gAXOLz.h-margin-r-x2"
     pick_up_here_button1 = "#viewport > div:nth-child(4) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.cupGLg.h-padding-l-tiny > button"
     pick_up_here_button2 = "#viewport > div:nth-child(5) > div > div.Row-uds8za-0.fdXLni > div:nth-child(3) > div:nth-child(1) > div > div:nth-child(1) > div > div:nth-child(3) > div.Row-uds8za-0.fdXLni > div.Col-favj32-0.EbfkY.h-padding-l-tiny > button"
     pick_it_up_button_saved = "body > div:nth-child(19) > div > div > div > div > div > div > div:nth-child(2) > div > div > div > div > div:nth-child(5) > div > div:nth-child(1) > div > div.Row-uds8za-0.fMgJXz > div.Col-favj32-0.eKwtCR.h-padding-l-tiny > button"
@@ -196,7 +196,7 @@ class PageProduct(Page):
         self.order_of_operations = [
             PageProduct.pick_it_up_button1,
             PageProduct.pick_it_up_button2,
-            PageProduct.pick_up_tile_button1,
+            #PageProduct.pick_up_tile_button1,
             PageProduct.pick_up_here_button1,
             PageProduct.pick_up_here_button2,
             PageProduct.add_to_cart,
@@ -233,7 +233,7 @@ class PageProduct(Page):
             time.sleep(1)
 
         def product_not_found(driver):
-            time.sleep(15)
+            time.sleep(60)
 
         def pick_it_up_saved(driver):
             self.added_to_cart += 1
@@ -244,7 +244,7 @@ class PageProduct(Page):
         return {
             PageProduct.pick_it_up_button1: pick_it_up1,
             PageProduct.pick_it_up_button2: pick_it_up2,
-            PageProduct.pick_up_tile_button1: pick_up_tile1,
+            #PageProduct.pick_up_tile_button1: pick_up_tile1,
             PageProduct.pick_up_here_button1: pick_up_here1,
             PageProduct.pick_up_here_button2: pick_up_here2,
             PageProduct.add_to_cart: add_to_cart,
